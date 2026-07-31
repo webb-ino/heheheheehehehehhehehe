@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>For Ashnoor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#fdf6f3;
+    --blush:#f7dde3;
+    --rose:#d98ba5;
+    --wine:#7a2e42;
+    --wine-deep:#5c2033;
+    --gold:#c9a15f;
+    --paper:#fffaf7;
+    --ink:#4a2532;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{
+    height:100%;
+    margin:0;
+    overflow:hidden; /* no page scrolling — this is a single-view card app */
+  }
+  body{
+    background:
+      radial-gradient(1200px 600px at 15% -10%, #fce8ee 0%, transparent 60%),
+      radial-gradient(1000px 700px at 90% 15%, #f6e3d8 0%, transparent 55%),
+      var(--cream);
+    color:var(--ink);
+    font-family:'Quicksand', sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .petal{
+    position:fixed;
+    top:-40px;
+    font-size:16px;
+    opacity:.5;
+    pointer-events:none;
+    animation:fall linear infinite;
+    z-index:1;
+    color:var(--rose);
+  }
+  @keyframes fall{
+    to{ transform:translateY(120vh) translateX(var(--drift,20px)) rotate(360deg); }
+  }
+
+  /* STAGE: fixed viewport card, everything happens inside */
+  .stage{
+    position:relative;
+    z-index:2;
+    width:min(92vw, 460px);
+    height:min(88vh, 720px);
+    background:var(--paper);
+    border-radius:18px;
+    border:1px solid #f0d9df;
+    box-shadow:0 40px 80px -30px rgba(122,46,66,.45);
+    overflow:hidden;
+  }
+
+  .page{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    padding:86px 32px 26px;
+    opacity:0;
+    transform:translateX(24px);
+    pointer-events:none;
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  .page.active{
+    opacity:1;
+    transform:translateX(0);
+    pointer-events:auto;
+  }
+  .page.exit-left{
+    transform:translateX(-24px);
+  }
+
+  .eyebrow{
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    font-size:11px;
+    color:var(--rose);
+    text-align:center;
+    margin-bottom:10px;
+  }
+
+  /* COVER PAGE */
+  #page-cover{ align-items:center; justify-content:center; text-align:center; }
+  #page-cover h1{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(2rem, 8vw, 2.7rem);
+    color:var(--wine-deep);
+    margin:6px 0 14px;
+    line-height:1.15;
+  }
+  #page-cover p{
+    font-family:'Cormorant Garamond', serif;
+    font-size:1.2rem;
+    color:var(--wine);
+    max-width:300px;
+  }
+  .seal{
+    margin-top:34px;
+    width:56px; height:56px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--rose), var(--wine));
+    display:flex; align-items:center; justify-content:center;
+    color:var(--paper); font-size:22px;
+    box-shadow:0 8px 24px rgba(122,46,66,.35);
+    animation:pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.08); }
+  }
+
+  /* LETTER PAGE */
+  #page-letter .to{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-size:1.5rem;
+    color:var(--wine-deep);
+    margin:6px 0 16px;
+  }
+  .letter-body{
+    font-family:'Cormorant Garamond', serif;
+    font-size:1.12rem;
+    line-height:1.75;
+    color:var(--ink);
+    flex:1;
+    overflow:hidden;
+  }
+  .letter-body .cursor{
+    display:inline-block;
+    width:2px; height:1em;
+    background:var(--wine);
+    vertical-align:text-bottom;
+    animation:blink 1s step-end infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+  .sign-off{
+    margin-top:14px;
+    text-align:right;
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    color:var(--wine);
+    font-size:1rem;
+  }
+
+  /* PHOTO PAGE */
+  #page-photo{ align-items:center; justify-content:center; }
+  .polaroid{
+    background:var(--paper);
+    padding:14px 14px 40px;
+    box-shadow:0 20px 40px -12px rgba(122,46,66,.3);
+    width:78%;
+    max-width:260px;
+    transform:rotate(-2deg);
+    position:relative;
+  }
+  .polaroid img{
+    width:100%;
+    display:block;
+    aspect-ratio:4/5;
+    object-fit:cover;
+    background:var(--blush);
+  }
+  .polaroid figcaption{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    text-align:center;
+    color:var(--wine);
+    margin-top:14px;
+    font-size:.95rem;
+  }
+  .tape{
+    position:absolute;
+    top:-12px; left:50%;
+    transform:translateX(-50%) rotate(-3deg);
+    width:76px; height:24px;
+    background:rgba(201,161,95,.35);
+    border:1px solid rgba(201,161,95,.5);
+  }
+  #page-photo h2{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-weight:500;
+    color:var(--wine-deep);
+    font-size:1.5rem;
+    text-align:center;
+    margin:18px 0 0;
+  }
+
+  /* REASONS PAGE */
+  #page-reasons h2{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-weight:500;
+    text-align:center;
+    color:var(--wine-deep);
+    font-size:1.5rem;
+    margin:6px 0 20px;
+  }
+  .reason-list{
+    list-style:none;
+    padding:0; margin:0;
+    display:grid;
+    gap:12px;
+    overflow-y:auto;
+  }
+  .reason-list li{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    background:#fff;
+    border:1px solid #f3e2e7;
+    border-radius:12px;
+    padding:12px 16px;
+    font-family:'Cormorant Garamond', serif;
+    font-size:1.05rem;
+    color:var(--ink);
+  }
+  .reason-list li::before{
+    content:"❀";
+    color:var(--rose);
+    font-size:1rem;
+    flex-shrink:0;
+    margin-top:3px;
+  }
+
+  /* CLOSING PAGE */
+  #page-closing{ align-items:center; justify-content:center; text-align:center; }
+  #page-closing blockquote{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-size:1.25rem;
+    color:var(--wine-deep);
+    line-height:1.5;
+    margin:0 0 30px;
+  }
+  #page-closing .signature{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-size:1.3rem;
+    color:var(--wine);
+  }
+  #page-closing .subline{
+    font-size:11px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--rose);
+    margin-top:8px;
+  }
+  #page-closing .heart{
+    margin-top:22px;
+    font-size:20px;
+    color:var(--rose);
+  }
+
+  /* NAV */
+  .nav{
+    position:absolute;
+    bottom:20px;
+    left:0; right:0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 28px;
+  }
+  .nav button{
+    font-family:'Quicksand';
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:.05em;
+    border:1.5px solid var(--rose);
+    background:transparent;
+    color:var(--wine);
+    padding:9px 20px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:background .2s ease, color .2s ease;
+  }
+  .nav button.primary{
+    background:var(--wine);
+    border-color:var(--wine);
+    color:var(--paper);
+  }
+  .nav button:hover{
+    background:var(--rose);
+    border-color:var(--rose);
+    color:var(--paper);
+  }
+  .nav button:disabled{
+    opacity:0;
+    pointer-events:none;
+  }
+
+  .tabs{
+    position:absolute;
+    top:0; left:0; right:0;
+    display:flex;
+    background:var(--blush);
+    border-bottom:1px solid #f0d3db;
+    z-index:3;
+  }
+  .tabs button{
+    flex:1;
+    border:none;
+    background:transparent;
+    font-family:'Quicksand';
+    font-weight:600;
+    font-size:11px;
+    letter-spacing:.03em;
+    color:var(--rose);
+    padding:14px 4px;
+    cursor:pointer;
+    position:relative;
+    transition:color .25s ease;
+  }
+  .tabs button.active{
+    color:var(--wine-deep);
+  }
+  .tabs button.active::after{
+    content:"";
+    position:absolute;
+    bottom:-1px; left:14%;
+    width:72%; height:2px;
+    background:var(--wine);
+    border-radius:2px;
+  }
+  .tabs button:hover{
+    color:var(--wine);
+  }
+</style>
+</head>
+<body>
+
+<div id="petals"></div>
+
+<div class="stage">
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="page active" id="page-cover">
+    <div class="eyebrow">Girlfriend's Day</div>
+    <h1>For Ashnoor</h1>
+    <p>A little corner of the internet, made just for you.</p>
+    <div class="seal">♥</div>
+  </div>
+
+  <div class="page" id="page-letter">
+    <p class="to">Dear Ashnoor,</p>
+    <p class="letter-body" id="typewriter"><span class="cursor"></span></p>
+    <p class="sign-off">— your Ashnooroholic</p>
+  </div>
+
+  <div class="page" id="page-photo">
+    <figure class="polaroid">
+      <div class="tape"></div>
+      <img src="img1.png" alt="A photo of Ashnoor" onerror="this.style.background='var(--blush)'; this.alt=''; this.src='';">
+      <figcaption>you, on an ordinary day, looking extraordinary</figcaption>
+    </figure>
+    <h2>My Favorite Person</h2>
+  </div>
+
+  <div class="page" id="page-reasons">
+    <h2>Reasons Why I Love You</h2>
+    <ul class="reason-list">
+      <li>The way you laugh at your own jokes before you even finish telling them.</li>
+      <li>You remember the tiny things I mention once and never bring up again.</li>
+      <li>Even on my worst days, talking to you makes everything feel lighter.</li>
+      <li>You're the first person I want to tell things to — good news or bad.</li>
+      <li>Being with you feels less like a choice and more like home.</li>
+    </ul>
+  </div>
+
+  <div class="page" id="page-closing">
+    <blockquote>You're not just my girlfriend — you're my best friend, my safe place, and my greatest blessing.</blockquote>
+    <div class="signature">Happy Girlfriend's Day, Ashnoor</div>
+    <div class="subline">with all my love</div>
+    <div class="heart">♥</div>
+  </div>
+
+  <div class="nav">
+    <span></span>
+    <button id="nextBtn" class="primary">Next →</button>
+  </div>
+
+</div>
+
+<script>
+  // Falling petals
+  const petalsContainer = document.getElementById('petals');
+  const symbols = ['❀','✿','♥','❁'];
+  for(let i=0;i<14;i++){
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+    p.style.left = Math.random()*100 + 'vw';
+    p.style.setProperty('--drift', (Math.random()*80-40)+'px');
+    p.style.animationDuration = (10 + Math.random()*10) + 's';
+    p.style.animationDelay = (Math.random()*10) + 's';
+    p.style.fontSize = (11 + Math.random()*8) + 'px';
+    petalsContainer.appendChild(p);
+  }
+
+  // Pages
+  const pageIds = ['page-cover','page-letter','page-photo','page-reasons','page-closing'];
+  const labels = ['Home','Letter','Us','Reasons','For You'];
+  const pages = pageIds.map(id => document.getElementById(id));
+  let current = 0;
+
+  const tabsWrap = document.getElementById('tabs');
+  labels.forEach((label, idx) => {
+    const b = document.createElement('button');
+    b.textContent = label;
+    if(idx === 0) b.classList.add('active');
+    b.addEventListener('click', () => { current = idx; render(); });
+    tabsWrap.appendChild(b);
+  });
+  const tabButtons = tabsWrap.querySelectorAll('button');
+
+  const nextBtn = document.getElementById('nextBtn');
+
+  function render(){
+    pages.forEach((p, idx) => {
+      p.classList.remove('active','exit-left');
+      if(idx === current) p.classList.add('active');
+      else if(idx < current) p.classList.add('exit-left');
+    });
+    tabButtons.forEach((b, idx) => b.classList.toggle('active', idx === current));
+    nextBtn.textContent = current === pages.length - 1 ? 'Restart' : 'Next →';
+
+    if(current === 1) startTypewriter();
+  }
+
+  nextBtn.addEventListener('click', () => {
+    if(current === pages.length - 1){ current = 0; }
+    else { current++; }
+    render();
+  });
+
+  // Typewriter effect (runs once)
+  let typed = false;
+  const message = "I know I don't say it enough, but you make my ordinary days feel like something worth remembering. On Girlfriend's Day, I just want you to know — every little moment with you matters to me, more than you probably realize. Thank you for being exactly who you are.";
+  function startTypewriter(){
+    if(typed) return;
+    typed = true;
+    const el = document.getElementById('typewriter');
+    const cursor = el.querySelector('.cursor');
+    let i = 0;
+    function typeNext(){
+      if(i < message.length){
+        cursor.insertAdjacentText('beforebegin', message.charAt(i));
+        i++;
+        setTimeout(typeNext, 26);
+      }
+    }
+    typeNext();
+  }
+
+  render();
+</script>
+
+</body>
+</html>
